@@ -1,32 +1,29 @@
-from banner import banner
-banner("DEEP THOUGHTS", "Keegan Ross")
+import os
 
-def main():
-    run_event_loop()
+def load(name):
+    data = []
+    filename = get_full_pathname(name)
 
-def run_event_loop():
-    print("What do you want to do with your journal?")
-    command = None
-    journal_data = []
+    if os.path.exists(filename):
+        print(f"...... loading from {filename}")
+        with open(filename) as fin:
+            for entry in fin.readlines():
+                data.append(entry.rstrip())
 
-    while command != "x":
-        command = input("[L]ist entries, [A]dd an entry, E[x]it: ")
+    return data
 
-        if command == "L":
-            list_entries(journal_data)
-        elif command == "A":
-            add_entry(journal_data)
-        elif command != "x":
-            print("Sorry, we do not understand")
 
-def list_entries(data):
-    print("Your journal entries: ")
-    entries = reversed(data)
-    for num, entry in enumerate(entries):
-        print(f"[{num+1}] {entry}")
+def save(name, data):
+    filename = get_full_pathname(name)
+    print(f"....... saving to {filename}")
+    with open(filename, 'w') as fout:
+        for entry in data:
+            fout.write(entry+"\n")
 
-def add_entry(data):
-    entry = input("Type your entry, <ENTER> to exit: ")
-    data.append(entry)
+def get_full_pathname(name):
+    filename = os.path.abspath(os.path.join(".", "journals", f"{name}.jrn"))
+    return filename
 
-main()
+
+def add_entry(text, data):
+    data.append(text)
